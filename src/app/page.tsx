@@ -1,67 +1,51 @@
-import Link from "next/link";
 import {
-  EmptyState,
   FixtureCard,
   Hero,
+  NewsCard,
   ResultCard,
   SectionTitle,
 } from "@/components/site-shell";
-import { getSeasonView } from "@/lib/data/dmbb";
-import { siteConfig } from "@/lib/site-config";
-
-/** Regenerated at most every 15 minutes; visitors are served static HTML. */
-export const revalidate = 900;
+import { getHeroContentCached } from "@/lib/cms/sanity";
+import { getOfficialDmbbData } from "@/lib/data/official-dmbb";
 
 export default async function Home() {
-  const { upcoming, recentResults, totalFixtures } = await getSeasonView();
-
+  const [data, heroContent] = await Promise.all([getOfficialDmbbData(), getHeroContentCached()]);
   return (
     <>
       <Hero
-        title="Dublin men's basketball, easier to read."
-        subtitle={`${siteConfig.tagline} Independent and community-run.`}
-        fixtureCount={totalFixtures}
+        title={heroContent?.title ?? "Dublin Men's Basketball Board"}
+        subtitle={
+          heroContent?.subtitle ??
+          "League, cup and representative basketball for affiliated clubs across the Dublin region."
+        }
       />
-
-      <section className="py-12">
+      <section className="py-14">
         <div className="dmbb-container grid gap-10 lg:grid-cols-2">
           <div>
-            <SectionTitle eyebrow="Next up" title="Upcoming fixtures" />
-            {upcoming.length > 0 ? (
-              <>
-                <div className="space-y-3">
-                  {upcoming.slice(0, 5).map((fixture) => (
-                    <FixtureCard key={fixture.id} fixture={fixture} />
-                  ))}
-                </div>
-                <Link
-                  href="/fixtures-results"
-                  className="mt-4 inline-block text-sm font-semibold text-brand-cyan-deep underline underline-offset-2"
-                >
-                  All {totalFixtures.toLocaleString("en-IE")} fixtures &rarr;
-                </Link>
-              </>
-            ) : (
-              <EmptyState title="No upcoming fixtures listed">
-                Nothing is scheduled in the current dataset.
-              </EmptyState>
-            )}
+            <SectionTitle eyebrow="Upcoming Fixtures" title="This Week" />
+            <div className="space-y-3">
+              {data.fixtures.slice(0, 4).map((fixture) => (
+                <FixtureCard key={fixture.id} fixture={fixture} />
+              ))}
+            </div>
           </div>
-
           <div>
-            <SectionTitle eyebrow="Latest" title="Recent results" />
-            {recentResults.length > 0 ? (
-              <div className="space-y-3">
-                {recentResults.slice(0, 5).map((result) => (
-                  <ResultCard key={result.id} result={result} />
-                ))}
-              </div>
-            ) : (
-              <EmptyState title="No results yet this season">
-                The 2026&ndash;27 season has not tipped off. Results will appear here once games
-                have been played and published.
-              </EmptyState>
-            )}
+            <SectionTitle eyebrow="Recent Results" title="Latest" />
+            <div className="space-y-3">
+              {data.results.slice(0, 4).map((result) => (
+                <ResultCard key={result.id} result={result} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="pb-14">
+        <div className="dmbb-container">
+          <SectionTitle eyebrow="From The Board" title="News & Announcements" />
+          <div className="grid gap-4 md:grid-cols-2">
+            {data.news.slice(0, 2).map((item) => (
+              <NewsCard key={item.id} item={item} />
+            ))}
           </div>
         </div>
       </section>

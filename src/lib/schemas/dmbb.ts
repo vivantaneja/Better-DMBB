@@ -26,8 +26,7 @@ export const competitionSchema = z.object({
   name: z.string(),
   tier: z.string().default("Senior"),
   teamCount: z.number(),
-  /** Free-text blurb. Empty is valid - we never invent filler copy. */
-  description: z.string().default(""),
+  description: z.string(),
 });
 
 export const standingsRowSchema = z.object({
@@ -40,8 +39,7 @@ export const standingsRowSchema = z.object({
 });
 
 export const dmbbPayloadSchema = z.object({
-  /** When this dataset was captured from the source. */
-  capturedAt: z.string(),
+  lastSyncedAt: z.string(),
   fixtures: z.array(fixtureSchema),
   results: z.array(fixtureSchema),
   news: z.array(newsItemSchema),
