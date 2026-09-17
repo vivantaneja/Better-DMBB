@@ -2,43 +2,44 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SiteFooter, SiteHeader } from "@/components/site-shell";
+import { siteConfig } from "@/lib/site-config";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "swap" });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Dublin Men's Basketball Board",
-  description: "Official Dublin Men's Basketball Board fixtures, results, competitions and updates.",
-  icons: {
-    icon: "/favicon.png",
-    apple: "/dmbb-logo.png",
-    shortcut: "/favicon.png",
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: `${siteConfig.displayName} - Unofficial fixtures & results`,
+    // Every page title carries "Unofficial" so it is visible in search results
+    // and browser tabs, not only once you are on the page.
+    template: `%s | ${siteConfig.displayName} (Unofficial)`,
+  },
+  description: `${siteConfig.tagline} An independent, unofficial site - not affiliated with the ${siteConfig.governingBody.name}.`,
+  applicationName: `${siteConfig.displayName} (Unofficial)`,
+  icons: { icon: "/favicon.svg" },
+  openGraph: {
+    title: `${siteConfig.displayName} (Unofficial)`,
+    description: siteConfig.tagline,
+    url: siteConfig.url,
+    siteName: `${siteConfig.displayName} (Unofficial)`,
+    locale: "en_IE",
+    type: "website",
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body
-        suppressHydrationWarning
-        className="min-h-full flex flex-col bg-background text-foreground"
-      >
+    <html lang="en-IE" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+      <body className="flex min-h-full flex-col bg-background text-foreground">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-brand-navy"
+        >
+          Skip to content
+        </a>
         <SiteHeader />
-        <main className="flex-1">{children}</main>
+        <main id="main" className="flex-1">{children}</main>
         <SiteFooter />
       </body>
     </html>

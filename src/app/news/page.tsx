@@ -1,28 +1,48 @@
-import { NewsCard, SectionTitle } from "@/components/site-shell";
-import { getOfficialDmbbData } from "@/lib/data/official-dmbb";
+import { EmptyState, NewsCard, SectionTitle } from "@/components/site-shell";
+import { getDmbbData } from "@/lib/data/dmbb";
+import { siteConfig } from "@/lib/site-config";
+
+export const revalidate = 900;
 
 export const metadata = {
-  title: "News | Dublin Men's Basketball Board",
+  title: "News",
 };
 
 export default async function NewsPage() {
-  const data = await getOfficialDmbbData();
+  const data = await getDmbbData();
+
   return (
-    <section className="py-14">
-      <div className="dmbb-container">
-        <SectionTitle eyebrow="From The Board" title="News & Announcements" />
-        <div className="mb-6 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-wide text-brand-muted">
-          {["Match Report", "Season Update", "Coaching", "Cup Draw", "Board Notice"].map((tag) => (
-            <span key={tag} className="rounded-full border border-border bg-surface px-3 py-1">
-              {tag}
-            </span>
-          ))}
-        </div>
-        <div className="space-y-4">
-          {data.news.map((item) => (
-            <NewsCard key={item.id} item={item} />
-          ))}
-        </div>
+    <section className="py-10">
+      <div className="dmbb-container space-y-6">
+        <SectionTitle eyebrow="Around the league" title="News" />
+        {data.news.length > 0 ? (
+          <div className="space-y-4">
+            {data.news.map((item) => (
+              <NewsCard key={item.id} item={item} />
+            ))}
+          </div>
+        ) : (
+          /*
+           * The previous build filled this page with placeholder category chips
+           * and a fabricated headline. An honest empty state and a link to the
+           * real source is better than invented content.
+           */
+          <EmptyState title="No news published here yet">
+            <p>
+              This site does not currently republish board announcements. For official notices,
+              fixtures changes and competition rules, see{" "}
+              <a
+                href={siteConfig.governingBody.url}
+                className="font-semibold underline underline-offset-2"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {siteConfig.governingBody.url.replace("https://", "")}
+              </a>
+              .
+            </p>
+          </EmptyState>
+        )}
       </div>
     </section>
   );

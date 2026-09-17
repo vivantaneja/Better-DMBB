@@ -1,12 +1,22 @@
 import Link from "next/link";
-import { CompetitionCard, SectionTitle } from "@/components/site-shell";
-import { getOfficialDmbbData } from "@/lib/data/official-dmbb";
+import { CompetitionCard, EmptyState, SectionTitle } from "@/components/site-shell";
+import { getDmbbData } from "@/lib/data/dmbb";
+import type { Competition } from "@/lib/schemas/dmbb";
+import { formatDate } from "@/lib/format";
+
+export const revalidate = 900;
 
 export const metadata = {
-  title: "Competitions | Dublin Men's Basketball Board",
+  title: "Competitions & tables",
 };
 
-type TabKey = "leagues-seasons" | "cups" | "shields";
+const TABS = [
+  { key: "leagues", label: "Leagues" },
+  { key: "cups", label: "Cups" },
+  { key: "shields", label: "Shields" },
+] as const;
+
+type TabKey = (typeof TABS)[number]["key"];
 
 type CompetitionGroup = "division" | "over" | "under" | "other";
 
@@ -26,11 +36,10 @@ function classifyLeagueName(name: string): {
 
   const divisionMatch = normalizedName.match(/division\s*(\d+)/i);
   if (divisionMatch) {
-    const divisionNumber = Number(divisionMatch[1]);
     return {
       group: "division",
-      bucketLabel: `Division ${divisionNumber}`,
-      primary: divisionNumber,
+      bucketLabel: `Division ${Number(divisionMatch[1])}`,
+      primary: Number(divisionMatch[1]),
       subgroup: bracket,
       variant: top4,
       normalizedName: lower,
@@ -39,11 +48,10 @@ function classifyLeagueName(name: string): {
 
   const overMatch = normalizedName.match(/over\s*(\d+)/i);
   if (overMatch) {
-    const overNumber = Number(overMatch[1]);
     return {
       group: "over",
-      bucketLabel: `Over ${overNumber}`,
-      primary: overNumber,
+      bucketLabel: `Over ${Number(overMatch[1])}`,
+      primary: Number(overMatch[1]),
       subgroup: bracket,
       variant: top4,
       normalizedName: lower,
@@ -52,7 +60,6 @@ function classifyLeagueName(name: string): {
 
   const underMatch = normalizedName.match(/(?:under|u)\s*(\d+)/i);
   if (underMatch) {
-    const underNumber = Number(underMatch[1]);
     const colorWeight = /\bblue\b/i.test(normalizedName)
       ? 1
       : /\bgreen\b/i.test(normalizedName)
@@ -62,8 +69,8 @@ function classifyLeagueName(name: string): {
           : 0;
     return {
       group: "under",
-      bucketLabel: `Under ${underNumber}`,
-      primary: underNumber,
+      bucketLabel: `Under ${Number(underMatch[1])}`,
+      primary: Number(underMatch[1]),
       subgroup: bracket || colorWeight,
       variant: top4,
       normalizedName: lower,
@@ -80,18 +87,18 @@ function classifyLeagueName(name: string): {
   };
 }
 
+const GROUP_ORDER: Record<CompetitionGroup, number> = {
+  division: 0,
+  over: 1,
+  under: 2,
+  other: 3,
+};
+
 function leagueSort(aName: string, bName: string): number {
-  const groupOrder: Record<CompetitionGroup, number> = {
-    division: 0,
-    over: 1,
-    under: 2,
-    other: 3,
-  };
   const a = classifyLeagueName(aName);
   const b = classifyLeagueName(bName);
-
   return (
-    groupOrder[a.group] - groupOrder[b.group] ||
+    GROUP_ORDER[a.group] - GROUP_ORDER[b.group] ||
     a.primary - b.primary ||
     a.subgroup - b.subgroup ||
     a.variant - b.variant ||
@@ -99,140 +106,127 @@ function leagueSort(aName: string, bName: string): number {
   );
 }
 
+function bucketLeagues(competitions: Competition[]) {
+  const buckets = new Map<string, { label: string; competitions: Competition[]; sortKey: number }>();
+
+  for (const competition of competitions) {
+    const meta = classifyLeagueName(competition.name);
+    const existing = buckets.get(meta.bucketLabel);
+    if (existing) {
+      existing.competitions.push(competition);
+      continue;
+    }
+    buckets.set(meta.bucketLabel, {
+      label: meta.bucketLabel,
+      competitions: [competition],
+      sortKey: GROUP_ORDER[meta.group] * 1000 + Math.min(meta.primary, 999),
+    });
+  }
+
+  return [...buckets.values()].sort((a, b) => a.sortKey - b.sortKey || a.label.localeCompare(b.label));
+}
+
 export default async function CompetitionsPage({
   searchParams,
 }: {
   searchParams?: Promise<{ tab?: string }>;
 }) {
-  const resolvedSearchParams = searchParams ? await searchParams : undefined;
-  const data = await getOfficialDmbbData();
-  const sortedCompetitions = [...data.competitions].sort((a, b) => leagueSort(a.name, b.name));
+  const resolved = searchParams ? await searchParams : undefined;
+  const data = await getDmbbData();
+
+  const sorted = [...data.competitions].sort((a, b) => leagueSort(a.name, b.name));
   const isCup = (name: string) => /\bcup\b/i.test(name);
   const isShield = (name: string) => /\bshield\b/i.test(name);
   const isTop4 = (name: string) => /top\s*4|final\s*4/i.test(name);
 
-  const activeTab = ((): TabKey => {
-    const tab = resolvedSearchParams?.tab;
-    if (tab === "cups" || tab === "shields" || tab === "leagues-seasons") return tab;
-    return "leagues-seasons";
-  })();
-
-  const grouped = {
-    leaguesAndSeasons: sortedCompetitions.filter(
-      (competition) =>
-        isTop4(competition.name) || (!isCup(competition.name) && !isShield(competition.name)),
-    ),
-    cups: sortedCompetitions.filter(
-      (competition) => !isTop4(competition.name) && isCup(competition.name) && !isShield(competition.name),
-    ),
-    shields: sortedCompetitions.filter(
-      (competition) => !isTop4(competition.name) && isShield(competition.name),
-    ),
+  const groups: Record<TabKey, Competition[]> = {
+    leagues: sorted.filter((c) => isTop4(c.name) || (!isCup(c.name) && !isShield(c.name))),
+    cups: sorted.filter((c) => !isTop4(c.name) && isCup(c.name) && !isShield(c.name)),
+    shields: sorted.filter((c) => !isTop4(c.name) && isShield(c.name)),
   };
-  const leagueBuckets = grouped.leaguesAndSeasons.reduce<
-    Array<{ label: string; competitions: (typeof grouped.leaguesAndSeasons)[number][]; sortKey: number }>
-  >((acc, competition) => {
-    const meta = classifyLeagueName(competition.name);
-    const existing = acc.find((bucket) => bucket.label === meta.bucketLabel);
-    if (existing) {
-      existing.competitions.push(competition);
-      return acc;
-    }
-    acc.push({
-      label: meta.bucketLabel,
-      competitions: [competition],
-      sortKey:
-        (meta.group === "division" ? 0 : meta.group === "over" ? 1 : meta.group === "under" ? 2 : 3) *
-          1000 +
-        meta.primary,
-    });
-    return acc;
-  }, []);
-  leagueBuckets.sort((a, b) => a.sortKey - b.sortKey || a.label.localeCompare(b.label));
+
+  const requested = resolved?.tab;
+  const activeTab: TabKey = TABS.some((tab) => tab.key === requested)
+    ? (requested as TabKey)
+    : "leagues";
+
+  const activeCompetitions = groups[activeTab];
+  const activeLabel = TABS.find((tab) => tab.key === activeTab)!.label;
 
   return (
     <section className="py-10">
-      <div className="dmbb-container space-y-7">
+      <div className="dmbb-container space-y-6">
         <SectionTitle
-          eyebrow={`${sortedCompetitions.length} Official Competitions`}
-          title="Competitions, Cups & Standings"
+          eyebrow={`${sorted.length} competitions listed`}
+          title="Competitions &amp; tables"
         />
         <p className="text-xs text-brand-muted">
-          Last synced: {new Date(data.lastSyncedAt).toLocaleString()}
+          Data captured <time dateTime={data.capturedAt}>{formatDate(data.capturedAt)}</time>. For
+          official confirmation, check{" "}
+          <a
+            href="https://dmbb.ie"
+            className="underline underline-offset-2"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            dmbb.ie
+          </a>
+          .
         </p>
-        <nav className="flex flex-wrap gap-2">
-          {([
-            { key: "leagues-seasons", label: `Leagues/Seasons (${grouped.leaguesAndSeasons.length})` },
-            { key: "cups", label: `Cups (${grouped.cups.length})` },
-            { key: "shields", label: `Shields (${grouped.shields.length})` },
-          ] as const).map((tab) => {
+
+        <nav aria-label="Competition type" className="flex flex-wrap gap-2">
+          {TABS.map((tab) => {
             const isActive = activeTab === tab.key;
             return (
               <Link
                 key={tab.key}
                 href={`/competitions?tab=${tab.key}`}
                 aria-current={isActive ? "page" : undefined}
-                style={isActive ? { color: "#ffffff" } : undefined}
-                className={`rounded-full border px-4 py-2 text-xs font-black uppercase tracking-wide transition-colors ${
+                className={`rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
                   isActive
                     ? "border-brand-navy bg-brand-navy text-white"
-                    : "border-border bg-white text-brand-navy hover:border-brand-cyan"
+                    : "border-border bg-white text-brand-navy hover:border-brand-cyan-deep"
                 }`}
               >
-                {tab.label}
+                {tab.label} ({groups[tab.key].length})
               </Link>
             );
           })}
         </nav>
 
-        {activeTab === "leagues-seasons" && grouped.leaguesAndSeasons.length > 0 && (
-          <div className="space-y-3">
-            <h3 className="text-xl font-black uppercase text-brand-navy">
-              Leagues & Seasons ({grouped.leaguesAndSeasons.length})
-            </h3>
-            <div className="space-y-5">
-              {leagueBuckets.map((bucket) => (
-                <section key={bucket.label} className="space-y-2">
-                  <h4 className="text-sm font-black uppercase tracking-wide text-brand-navy">
-                    {bucket.label} ({bucket.competitions.length})
-                  </h4>
-                  <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {bucket.competitions.map((competition) => (
-                      <CompetitionCard key={competition.id} competition={competition} compact />
-                    ))}
-                  </div>
-                </section>
-              ))}
-            </div>
+        {/*
+          Rendered unconditionally. Previously each panel was gated on
+          `length > 0`, so selecting a tab with no competitions (Shields, which
+          is empty this season) produced a blank page that read as a broken
+          button.
+        */}
+        {activeCompetitions.length === 0 ? (
+          <EmptyState title={`No ${activeLabel.toLowerCase()} listed for this season`}>
+            Nothing in the current dataset falls under {activeLabel.toLowerCase()}. This usually
+            means the competition has not been published yet.
+          </EmptyState>
+        ) : activeTab === "leagues" ? (
+          <div className="space-y-6">
+            {bucketLeagues(activeCompetitions).map((bucket) => (
+              <section key={bucket.label} className="space-y-2.5">
+                <h3 className="text-sm font-bold uppercase tracking-wide text-brand-navy">
+                  {bucket.label} ({bucket.competitions.length})
+                </h3>
+                <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {bucket.competitions.map((competition) => (
+                    <CompetitionCard key={competition.id} competition={competition} compact />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        ) : (
+          <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {activeCompetitions.map((competition) => (
+              <CompetitionCard key={competition.id} competition={competition} compact />
+            ))}
           </div>
         )}
-
-        {activeTab === "cups" && grouped.cups.length > 0 && (
-          <div className="space-y-3">
-            <h3 className="text-xl font-black uppercase text-brand-navy">
-              Cups ({grouped.cups.length})
-            </h3>
-            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {grouped.cups.map((competition) => (
-                <CompetitionCard key={competition.id} competition={competition} compact />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {activeTab === "shields" && grouped.shields.length > 0 && (
-          <div className="space-y-3">
-            <h3 className="text-xl font-black uppercase text-brand-navy">
-              Shields ({grouped.shields.length})
-            </h3>
-            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {grouped.shields.map((competition) => (
-                <CompetitionCard key={competition.id} competition={competition} compact />
-              ))}
-            </div>
-          </div>
-        )}
-
       </div>
     </section>
   );

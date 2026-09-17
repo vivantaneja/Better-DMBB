@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import { syncDmbbData } from "@/lib/data/official-dmbb";
+import { getDataMode, getDmbbData } from "@/lib/data/dmbb";
 
 export async function GET() {
-  const payload = await syncDmbbData();
+  const payload = await getDmbbData();
   return NextResponse.json({
     ok: true,
-    lastSyncedAt: payload.lastSyncedAt,
+    mode: getDataMode(),
+    capturedAt: payload.capturedAt,
     counts: {
       fixtures: payload.fixtures.length,
       results: payload.results.length,
