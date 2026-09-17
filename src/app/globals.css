@@ -1,21 +1,27 @@
 @import "tailwindcss";
 
+/*
+ * Deliberately distinct from dmbb.ie's navy/cyan scheme. Visual distance is
+ * part of not being mistaken for the official site.
+ */
 :root {
-  --background: #f4f5f6;
-  --foreground: #0b1d3b;
+  --background: #f7f7f5;
+  --foreground: #14161a;
   --surface: #ffffff;
-  --brand-navy: #041f4b;
-  --brand-cyan: #18c2df;
-  --brand-muted: #7d8ca8;
-  --border: #d8dee9;
+  --brand-ink: #0b1f3a;
+  --brand-accent: #b45309;
+  --brand-accent-bright: #f5a623;
+  --brand-muted: #5f6b7a;
+  --border: #e2e5ea;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
-  --color-brand-navy: var(--brand-navy);
-  --color-brand-cyan: var(--brand-cyan);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-bright: var(--brand-accent-bright);
   --color-brand-muted: var(--brand-muted);
   --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
@@ -28,18 +34,31 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
-a {
-  color: inherit;
+/*
+ * Must live in @layer base. An unlayered `a { color: inherit }` outranks every
+ * layered Tailwind utility, so `text-white` on a link silently loses and you
+ * get dark-on-dark buttons.
+ */
+@layer base {
+  a {
+    color: inherit;
+  }
 }
 
-.dmbb-container {
+.mbd-container {
   width: min(1200px, calc(100% - 2rem));
   margin: 0 auto;
 }
 
-.dmbb-card {
+.mbd-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(4, 31, 75, 0.05);
+  border-radius: 12px;
+}
+
+/* Visible keyboard focus everywhere, not just where Tailwind happens to add it. */
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
 }
