@@ -3,18 +3,18 @@ import { siteConfig } from "@/lib/site-config";
 
 export const metadata = {
   title: "About & disclaimer",
-  description: `${siteConfig.name} is an independent, unofficial site with no affiliation to the ${siteConfig.governingBody.name}.`,
+  description: `An independent, unofficial site with no affiliation to the ${siteConfig.governingBody.name}.`,
 };
 
 export default function AboutPage() {
-  const { governingBody, name, contactEmail } = siteConfig;
+  const { governingBody, contactEmail } = siteConfig;
 
   return (
     <LegalPage title="About this site" updated="17 September 2026">
       <div className="rounded-lg border border-amber-300 bg-amber-50 p-5">
         <h2>This is not the official DMBB website</h2>
         <p className="mt-2">
-          {name} is an independent, community-run website. It is <strong>not</strong> affiliated
+          This website is an independent, community-run project. It is <strong>not</strong> affiliated
           with, endorsed by, sponsored by, or connected in any way to the {governingBody.name} (
           {governingBody.abbreviation}), Basketball Ireland, or any club listed on this site.
         </p>

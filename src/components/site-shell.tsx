@@ -15,15 +15,15 @@ type BracketRound = {
  */
 export function UnofficialBanner() {
   return (
-    <div className="border-b border-amber-300 bg-amber-100 text-brand-ink">
-      <div className="mbd-container flex flex-wrap items-center justify-center gap-x-2 gap-y-1 py-2 text-center text-xs sm:text-sm">
+    <div className="border-b border-amber-300 bg-amber-100 text-brand-navy">
+      <div className="dmbb-container flex flex-wrap items-center justify-center gap-x-2 gap-y-1 py-2 text-center text-xs sm:text-sm">
         <span className="font-semibold">Unofficial fan-run site.</span>
         <span className="text-brand-muted">
           Not affiliated with the {siteConfig.governingBody.name}.
         </span>
         <a
           href={siteConfig.governingBody.url}
-          className="font-semibold underline underline-offset-2 hover:text-brand-accent"
+          className="font-semibold underline underline-offset-2 hover:text-brand-cyan-deep"
           rel="noopener noreferrer"
           target="_blank"
         >
@@ -46,8 +46,8 @@ export function SiteHeader() {
   return (
     <>
       <UnofficialBanner />
-      <header className="bg-brand-ink text-white">
-        <div className="mbd-container flex flex-wrap items-center justify-between gap-3 py-4">
+      <header className="bg-brand-navy text-white">
+        <div className="dmbb-container flex flex-wrap items-center justify-between gap-3 py-4">
           <Link href="/" className="flex min-w-0 items-center gap-3">
             {/* Original mark. Never the DMBB crest. */}
             <svg
@@ -68,10 +68,10 @@ export function SiteHeader() {
             </svg>
             <span className="min-w-0">
               <span className="block truncate text-base font-bold leading-tight sm:text-lg">
-                {siteConfig.name}
+                {siteConfig.displayName}
               </span>
               <span className="block truncate text-[11px] text-white/60">
-                Unofficial · community-run
+                {siteConfig.qualifier} · not the official site
               </span>
             </span>
           </Link>
@@ -83,7 +83,7 @@ export function SiteHeader() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-white/80 transition-colors hover:text-brand-accent-bright"
+                className="text-white/80 transition-colors hover:text-brand-cyan"
               >
                 {item.label}
               </Link>
@@ -106,24 +106,24 @@ export function Hero({
 }) {
   return (
     <section className="border-b border-border bg-white">
-      <div className="mbd-container py-12 md:py-16">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-accent">
+      <div className="dmbb-container py-12 md:py-16">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-cyan-deep">
           Season 2026&ndash;27
         </p>
-        <h1 className="mt-3 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight text-brand-ink md:text-6xl">
+        <h1 className="mt-3 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight text-brand-navy md:text-6xl">
           {title}
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-brand-muted">{subtitle}</p>
         <div className="mt-7 flex flex-wrap gap-3">
           <Link
             href="/fixtures-results"
-            className="rounded-lg bg-brand-ink px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-ink/90"
+            className="rounded-lg bg-brand-navy px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-navy/90"
           >
             Browse {fixtureCount.toLocaleString("en-IE")} fixtures
           </Link>
           <Link
             href="/competitions"
-            className="rounded-lg border border-border bg-white px-5 py-3 text-sm font-semibold text-brand-ink transition-colors hover:border-brand-accent"
+            className="rounded-lg border border-border bg-white px-5 py-3 text-sm font-semibold text-brand-navy transition-colors hover:border-brand-cyan-deep"
           >
             Competitions &amp; tables
           </Link>
@@ -136,8 +136,8 @@ export function Hero({
 export function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="mb-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-accent">{eyebrow}</p>
-      <h2 className="mt-1 text-2xl font-bold tracking-tight text-brand-ink md:text-3xl">{title}</h2>
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-cyan-deep">{eyebrow}</p>
+      <h2 className="mt-1 text-2xl font-bold tracking-tight text-brand-navy md:text-3xl">{title}</h2>
     </div>
   );
 }
@@ -154,8 +154,8 @@ export function EmptyState({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="mbd-card p-6">
-      <p className="font-semibold text-brand-ink">{title}</p>
+    <div className="dmbb-card p-6">
+      <p className="font-semibold text-brand-navy">{title}</p>
       {children && <div className="mt-1.5 text-sm text-brand-muted">{children}</div>}
     </div>
   );
@@ -163,15 +163,15 @@ export function EmptyState({
 
 export function FixtureCard({ fixture }: { fixture: Fixture }) {
   return (
-    <article className="mbd-card p-4">
+    <article className="dmbb-card p-4">
       <p className="text-xs font-semibold uppercase tracking-wide text-brand-muted">
         {fixture.division}
       </p>
-      <h3 className="mt-2 text-base font-semibold text-brand-ink">
+      <h3 className="mt-2 text-base font-semibold text-brand-navy">
         {fixture.homeTeam} <span className="font-normal text-brand-muted">v</span> {fixture.awayTeam}
       </h3>
       <p className="mt-1.5 text-sm text-brand-muted">{fixture.venue}</p>
-      <p className="mt-1 text-sm font-medium text-brand-ink">
+      <p className="mt-1 text-sm font-medium text-brand-navy">
         <time dateTime={fixture.tipOff}>{formatTipOff(fixture.tipOff)}</time>
       </p>
     </article>
@@ -180,15 +180,15 @@ export function FixtureCard({ fixture }: { fixture: Fixture }) {
 
 export function ResultCard({ result }: { result: Fixture }) {
   return (
-    <article className="mbd-card p-4">
+    <article className="dmbb-card p-4">
       <p className="text-xs font-semibold uppercase tracking-wide text-brand-muted">
         {result.division}
       </p>
       <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
-        <h3 className="min-w-0 text-base font-semibold text-brand-ink">
+        <h3 className="min-w-0 text-base font-semibold text-brand-navy">
           {result.homeTeam} <span className="font-normal text-brand-muted">v</span> {result.awayTeam}
         </h3>
-        <p className="shrink-0 whitespace-nowrap text-right text-xl font-bold tabular-nums text-brand-ink">
+        <p className="shrink-0 whitespace-nowrap text-right text-xl font-bold tabular-nums text-brand-navy">
           {result.homeScore ?? "-"}&ndash;{result.awayScore ?? "-"}
         </p>
       </div>
@@ -201,16 +201,16 @@ export function ResultCard({ result }: { result: Fixture }) {
 
 export function NewsCard({ item }: { item: NewsItem }) {
   return (
-    <article className="mbd-card p-5">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-accent">
+    <article className="dmbb-card p-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-cyan-deep">
         {item.category.replace(/_/g, " ")}
       </p>
-      <h3 className="mt-2 text-xl font-bold leading-snug text-brand-ink">{item.title}</h3>
+      <h3 className="mt-2 text-xl font-bold leading-snug text-brand-navy">{item.title}</h3>
       <p className="mt-2 text-brand-muted">{item.excerpt}</p>
       {item.href && (
         <a
           href={item.href}
-          className="mt-3 inline-block text-sm font-semibold text-brand-accent underline underline-offset-2"
+          className="mt-3 inline-block text-sm font-semibold text-brand-cyan-deep underline underline-offset-2"
           rel="noopener noreferrer"
           target="_blank"
         >
@@ -231,13 +231,13 @@ export function CompetitionCard({
   return (
     <Link href={`/competitions/${competition.id}`} className="block">
       <article
-        className={`mbd-card transition-colors hover:border-brand-accent ${compact ? "p-4" : "p-5"}`}
+        className={`dmbb-card transition-colors hover:border-brand-cyan-deep ${compact ? "p-4" : "p-5"}`}
       >
-        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-accent">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-cyan-deep">
           {competition.tier}
         </p>
         <h3
-          className={`mt-1.5 font-bold leading-tight text-brand-ink ${compact ? "text-base" : "text-xl"}`}
+          className={`mt-1.5 font-bold leading-tight text-brand-navy ${compact ? "text-base" : "text-xl"}`}
         >
           {competition.name}
         </h3>
@@ -254,10 +254,10 @@ export function CompetitionCard({
 
 export function StandingsTable({ rows }: { rows: StandingsRow[] }) {
   return (
-    <div className="mbd-card overflow-x-auto">
+    <div className="dmbb-card overflow-x-auto">
       <table className="w-full text-left text-sm">
         <caption className="sr-only">League table</caption>
-        <thead className="bg-brand-ink text-white">
+        <thead className="bg-brand-navy text-white">
           <tr>
             <th scope="col" className="px-4 py-2.5 font-semibold">Team</th>
             <th scope="col" className="px-3 py-2.5 text-right font-semibold">P</th>
@@ -269,7 +269,7 @@ export function StandingsTable({ rows }: { rows: StandingsRow[] }) {
         <tbody>
           {rows.map((row) => (
             <tr key={`${row.competitionId}-${row.team}`} className="border-t border-border">
-              <td className="px-4 py-2.5 font-medium text-brand-ink">{row.team}</td>
+              <td className="px-4 py-2.5 font-medium text-brand-navy">{row.team}</td>
               <td className="px-3 py-2.5 text-right tabular-nums">{row.played}</td>
               <td className="px-3 py-2.5 text-right tabular-nums">{row.won}</td>
               <td className="px-3 py-2.5 text-right tabular-nums">{row.lost}</td>
@@ -288,24 +288,24 @@ export function TournamentBracket({ rounds }: { rounds: BracketRound[] }) {
       <div className="grid min-w-max grid-flow-col auto-cols-[17rem] items-start gap-5">
         {rounds.map((round) => (
           <section key={round.label} className="space-y-2.5">
-            <h4 className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-accent">
+            <h4 className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-cyan-deep">
               {round.label}
             </h4>
             {round.matches.map((match) => (
-              <article key={match.id} className="mbd-card p-4">
+              <article key={match.id} className="dmbb-card p-4">
                 <p className="text-xs text-brand-muted">
                   <time dateTime={match.tipOff}>{formatDate(match.tipOff)}</time>
                 </p>
                 <div className="mt-2 space-y-1.5">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="font-medium text-brand-ink">{match.homeTeam}</span>
-                    <span className="font-bold tabular-nums text-brand-ink">
+                    <span className="font-medium text-brand-navy">{match.homeTeam}</span>
+                    <span className="font-bold tabular-nums text-brand-navy">
                       {match.homeScore ?? "-"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between gap-3">
-                    <span className="font-medium text-brand-ink">{match.awayTeam}</span>
-                    <span className="font-bold tabular-nums text-brand-ink">
+                    <span className="font-medium text-brand-navy">{match.awayTeam}</span>
+                    <span className="font-bold tabular-nums text-brand-navy">
                       {match.awayScore ?? "-"}
                     </span>
                   </div>
@@ -322,8 +322,8 @@ export function TournamentBracket({ rounds }: { rounds: BracketRound[] }) {
 
 export function SiteFooter() {
   return (
-    <footer className="mt-16 bg-brand-ink text-sm text-white/70">
-      <div className="mbd-container space-y-6 py-10">
+    <footer className="mt-16 bg-brand-navy text-sm text-white/70">
+      <div className="dmbb-container space-y-6 py-10">
         <div className="flex flex-wrap gap-x-6 gap-y-2">
           <Link href="/about" className="hover:text-white">About &amp; disclaimer</Link>
           <Link href="/terms" className="hover:text-white">Terms of use</Link>
@@ -339,7 +339,7 @@ export function SiteFooter() {
         </div>
         <p className="max-w-3xl leading-relaxed text-white/60">{siteConfig.disclaimerLong}</p>
         <p className="text-white/40">
-          &copy; {new Date().getUTCFullYear()} {siteConfig.name}. Fixture and result information is
+          &copy; {new Date().getUTCFullYear()} this website. Fixture and result information is
           factual sporting data compiled from public sources and remains the responsibility of the
           organising body.
         </p>

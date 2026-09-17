@@ -24,7 +24,7 @@ export default async function Home() {
       />
 
       <section className="py-12">
-        <div className="mbd-container grid gap-10 lg:grid-cols-2">
+        <div className="dmbb-container grid gap-10 lg:grid-cols-2">
           <div>
             <SectionTitle eyebrow="Next up" title="Upcoming fixtures" />
             {upcoming.length > 0 ? (
@@ -36,7 +36,7 @@ export default async function Home() {
                 </div>
                 <Link
                   href="/fixtures-results"
-                  className="mt-4 inline-block text-sm font-semibold text-brand-accent underline underline-offset-2"
+                  className="mt-4 inline-block text-sm font-semibold text-brand-cyan-deep underline underline-offset-2"
                 >
                   All {totalFixtures.toLocaleString("en-IE")} fixtures &rarr;
                 </Link>

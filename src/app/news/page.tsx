@@ -13,7 +13,7 @@ export default async function NewsPage() {
 
   return (
     <section className="py-10">
-      <div className="mbd-container space-y-6">
+      <div className="dmbb-container space-y-6">
         <SectionTitle eyebrow="Around the league" title="News" />
         {data.news.length > 0 ? (
           <div className="space-y-4">

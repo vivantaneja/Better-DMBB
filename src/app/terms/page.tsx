@@ -4,18 +4,18 @@ import { siteConfig } from "@/lib/site-config";
 export const metadata = { title: "Terms of use" };
 
 export default function TermsPage() {
-  const { name, governingBody, contactEmail } = siteConfig;
+  const { governingBody, contactEmail } = siteConfig;
 
   return (
     <LegalPage title="Terms of use" updated="17 September 2026">
       <p>
-        By using {name} you accept these terms. They are deliberately short and written in plain
+        By using this website you accept these terms. They are deliberately short and written in plain
         English.
       </p>
 
       <h2>1. No affiliation</h2>
       <p>
-        {name} is an independent site with no connection to the {governingBody.name}, Basketball
+        This website is an independent project with no connection to the {governingBody.name}, Basketball
         Ireland, or any listed club. Nothing on this site is an official statement of any of those
         organisations.
       </p>
@@ -29,7 +29,7 @@ export default function TermsPage() {
 
       <h2>3. Limitation of liability</h2>
       <p>
-        To the fullest extent permitted by law, {name} and its operator accept no liability for any
+        To the fullest extent permitted by law, this website and its operator accept no liability for any
         loss, cost or inconvenience arising from reliance on information published here - including
         wasted journeys to cancelled or rescheduled games. Always confirm details with your club or
         the official source. Nothing in these terms limits liability for death or personal injury

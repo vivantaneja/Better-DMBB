@@ -4,12 +4,12 @@ import { siteConfig } from "@/lib/site-config";
 export const metadata = { title: "Privacy" };
 
 export default function PrivacyPage() {
-  const { name, contactEmail } = siteConfig;
+  const { contactEmail } = siteConfig;
 
   return (
     <LegalPage title="Privacy" updated="17 September 2026">
       <p>
-        Short version: {name} does not ask you for personal information, does not set advertising or
+        Short version: this website does not ask you for personal information, does not set advertising or
         analytics cookies, and does not track you across websites.
       </p>
 

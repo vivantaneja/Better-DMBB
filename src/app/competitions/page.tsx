@@ -155,7 +155,7 @@ export default async function CompetitionsPage({
 
   return (
     <section className="py-10">
-      <div className="mbd-container space-y-6">
+      <div className="dmbb-container space-y-6">
         <SectionTitle
           eyebrow={`${sorted.length} competitions listed`}
           title="Competitions &amp; tables"
@@ -184,8 +184,8 @@ export default async function CompetitionsPage({
                 aria-current={isActive ? "page" : undefined}
                 className={`rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
                   isActive
-                    ? "border-brand-ink bg-brand-ink text-white"
-                    : "border-border bg-white text-brand-ink hover:border-brand-accent"
+                    ? "border-brand-navy bg-brand-navy text-white"
+                    : "border-border bg-white text-brand-navy hover:border-brand-cyan-deep"
                 }`}
               >
                 {tab.label} ({groups[tab.key].length})
@@ -209,7 +209,7 @@ export default async function CompetitionsPage({
           <div className="space-y-6">
             {bucketLeagues(activeCompetitions).map((bucket) => (
               <section key={bucket.label} className="space-y-2.5">
-                <h3 className="text-sm font-bold uppercase tracking-wide text-brand-ink">
+                <h3 className="text-sm font-bold uppercase tracking-wide text-brand-navy">
                   {bucket.label} ({bucket.competitions.length})
                 </h3>
                 <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

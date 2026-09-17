@@ -1,27 +1,29 @@
 @import "tailwindcss";
 
-/*
- * Deliberately distinct from dmbb.ie's navy/cyan scheme. Visual distance is
- * part of not being mistaken for the official site.
- */
 :root {
-  --background: #f7f7f5;
-  --foreground: #14161a;
+  --background: #f4f5f6;
+  --foreground: #0b1d3b;
   --surface: #ffffff;
-  --brand-ink: #0b1f3a;
-  --brand-accent: #b45309;
-  --brand-accent-bright: #f5a623;
-  --brand-muted: #5f6b7a;
-  --border: #e2e5ea;
+  --brand-navy: #041f4b;
+  /* Brand cyan, for use on the navy backgrounds it was designed for. */
+  --brand-cyan: #18c2df;
+  /*
+   * Same hue, darkened for small text on light backgrounds. #18c2df on white
+   * is about 2:1 contrast, which fails WCAG AA badly at the eyebrow/label
+   * sizes it gets used at. This keeps the colour identity and stays readable.
+   */
+  --brand-cyan-deep: #0b7a91;
+  --brand-muted: #6b7a94;
+  --border: #d8dee9;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
-  --color-brand-ink: var(--brand-ink);
-  --color-brand-accent: var(--brand-accent);
-  --color-brand-accent-bright: var(--brand-accent-bright);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-cyan: var(--brand-cyan);
+  --color-brand-cyan-deep: var(--brand-cyan-deep);
   --color-brand-muted: var(--brand-muted);
   --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
@@ -45,20 +47,21 @@ body {
   }
 }
 
-.mbd-container {
+.dmbb-container {
   width: min(1200px, calc(100% - 2rem));
   margin: 0 auto;
 }
 
-.mbd-card {
+.dmbb-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(4, 31, 75, 0.05);
 }
 
 /* Visible keyboard focus everywhere, not just where Tailwind happens to add it. */
 :where(a, button, [tabindex]):focus-visible {
-  outline: 2px solid var(--brand-accent);
+  outline: 2px solid var(--brand-cyan-deep);
   outline-offset: 2px;
   border-radius: 6px;
 }

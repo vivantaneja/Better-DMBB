@@ -122,11 +122,11 @@ export default async function CompetitionDetailPage({ params }: CompetitionPageP
 
   return (
     <section className="py-10">
-      <div className="mbd-container space-y-9">
+      <div className="dmbb-container space-y-9">
         <div className="space-y-3">
           <Link
             href="/competitions"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-accent"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-cyan-deep"
           >
             <span aria-hidden="true">&larr;</span> Back to competitions
           </Link>
@@ -162,7 +162,7 @@ export default async function CompetitionDetailPage({ params }: CompetitionPageP
                   {standings.map((row) => (
                     <li
                       key={row.team}
-                      className="rounded border border-border bg-background px-2 py-0.5 text-brand-ink"
+                      className="rounded border border-border bg-background px-2 py-0.5 text-brand-navy"
                     >
                       {row.team}
                     </li>

@@ -13,7 +13,7 @@ export default async function FixturesResultsPage() {
 
   return (
     <section className="py-10">
-      <div className="mbd-container space-y-6">
+      <div className="dmbb-container space-y-6">
         <SectionTitle eyebrow="Season 2026-27" title="Fixtures &amp; results" />
         <p className="text-xs text-brand-muted">
           Data captured <time dateTime={capturedAt}>{formatDate(capturedAt)}</time>.
@@ -22,7 +22,7 @@ export default async function FixturesResultsPage() {
 
         <div className="grid gap-10 lg:grid-cols-2">
           <div>
-            <h2 className="mb-3 text-lg font-bold text-brand-ink">
+            <h2 className="mb-3 text-lg font-bold text-brand-navy">
               Upcoming ({upcoming.length.toLocaleString("en-IE")})
             </h2>
             {upcoming.length > 0 ? (
@@ -39,7 +39,7 @@ export default async function FixturesResultsPage() {
           </div>
 
           <div>
-            <h2 className="mb-3 text-lg font-bold text-brand-ink">
+            <h2 className="mb-3 text-lg font-bold text-brand-navy">
               Results ({results.length.toLocaleString("en-IE")})
             </h2>
             {results.length > 0 ? (

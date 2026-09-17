@@ -10,19 +10,19 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} - Unofficial Dublin basketball fixtures`,
+    default: `${siteConfig.displayName} - Unofficial fixtures & results`,
     // Every page title carries "Unofficial" so it is visible in search results
     // and browser tabs, not only once you are on the page.
-    template: `%s | ${siteConfig.name} (Unofficial)`,
+    template: `%s | ${siteConfig.displayName} (Unofficial)`,
   },
-  description: `${siteConfig.tagline} An independent community site, not affiliated with the ${siteConfig.governingBody.name}.`,
-  applicationName: siteConfig.name,
+  description: `${siteConfig.tagline} An independent, unofficial site - not affiliated with the ${siteConfig.governingBody.name}.`,
+  applicationName: `${siteConfig.displayName} (Unofficial)`,
   icons: { icon: "/favicon.svg" },
   openGraph: {
-    title: `${siteConfig.name} (Unofficial)`,
+    title: `${siteConfig.displayName} (Unofficial)`,
     description: siteConfig.tagline,
     url: siteConfig.url,
-    siteName: siteConfig.name,
+    siteName: `${siteConfig.displayName} (Unofficial)`,
     locale: "en_IE",
     type: "website",
   },
@@ -34,7 +34,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="flex min-h-full flex-col bg-background text-foreground">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-brand-ink"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-brand-navy"
         >
           Skip to content
         </a>
