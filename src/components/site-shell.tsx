@@ -6,6 +6,26 @@ type BracketRound = {
   matches: Fixture[];
 };
 
+/** Shown above the masthead on every page. Not dismissible by design. */
+export function UnofficialBanner() {
+  return (
+    <div className="border-b border-amber-300 bg-amber-100 text-brand-navy">
+      <div className="dmbb-container flex flex-wrap items-center justify-center gap-x-2 gap-y-1 py-2 text-center text-xs sm:text-sm">
+        <span className="font-semibold">Unofficial fan-run site.</span>
+        <span>Not affiliated with the Dublin Men&apos;s Basketball Board.</span>
+        <a
+          href="https://dmbb.ie"
+          className="font-semibold underline underline-offset-2"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Official site: dmbb.ie
+        </a>
+      </div>
+    </div>
+  );
+}
+
 export function SiteHeader() {
   const nav = [
     { href: "/", label: "Home" },
@@ -15,7 +35,9 @@ export function SiteHeader() {
   ];
 
   return (
-    <header className="bg-brand-navy text-white">
+    <>
+      <UnofficialBanner />
+      <header className="bg-brand-navy text-white">
       <div className="dmbb-container flex items-center justify-between gap-3 py-5">
         <Link href="/" className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
           <Image
@@ -25,8 +47,13 @@ export function SiteHeader() {
             alt="Dublin Men's Basketball Board logo"
             className="h-11 w-11 rounded-full sm:h-[54px] sm:w-[54px]"
           />
-          <div className="truncate text-[11px] uppercase tracking-[0.16em] text-brand-cyan sm:text-xs sm:tracking-[0.2em]">
-            Dublin Men&apos;s Basketball Board
+          <div className="min-w-0">
+            <div className="truncate text-[11px] uppercase tracking-[0.16em] text-brand-cyan sm:text-xs sm:tracking-[0.2em]">
+              Dublin Men&apos;s Basketball Board
+            </div>
+            <div className="truncate text-[10px] normal-case tracking-normal text-white/60">
+              Unofficial &middot; not the official site
+            </div>
           </div>
         </Link>
         <nav className="hidden md:flex items-center gap-8 text-sm uppercase tracking-wider">
@@ -43,7 +70,8 @@ export function SiteHeader() {
           This Week
         </Link>
       </div>
-    </header>
+      </header>
+    </>
   );
 }
 
@@ -211,8 +239,16 @@ export function SiteFooter() {
   return (
     <footer className="mt-16 bg-brand-navy py-10 text-sm text-slate-200">
       <div className="dmbb-container flex flex-wrap items-center justify-between gap-3">
-        <p>Official Dublin Men&apos;s Basketball Board</p>
-        <p>Data source: dmbb.ie</p>
+        <p>
+          Unofficial fan-run site. Not affiliated with, endorsed by, or connected to the Dublin
+          Men&apos;s Basketball Board.
+        </p>
+        <p>
+          Official site and data source:{" "}
+          <a href="https://dmbb.ie" className="underline underline-offset-2" rel="noopener noreferrer" target="_blank">
+            dmbb.ie
+          </a>
+        </p>
       </div>
     </footer>
   );

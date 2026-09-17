@@ -14,8 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Dublin Men's Basketball Board",
-  description: "Official Dublin Men's Basketball Board fixtures, results, competitions and updates.",
+  title: "Dublin Men's Basketball Board (Unofficial)",
+  description:
+    "Unofficial fan-run site for Dublin Men's Basketball Board fixtures, results, competitions and updates. Not affiliated with the DMBB.",
   icons: {
     icon: "/favicon.png",
     apple: "/dmbb-logo.png",

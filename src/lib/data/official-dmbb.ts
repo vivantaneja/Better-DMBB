@@ -619,7 +619,7 @@ export async function getOfficialDmbbData(): Promise<DmbbPayload> {
   inFlightPayload = getOfficialDmbbDataCached()
     .then(async (payload) => {
       if (isFallbackLikePayload(payload)) {
-        revalidateTag("official-dmbb");
+        revalidateTag("official-dmbb", { expire: 900 });
         return getOfficialDmbbDataInternal();
       }
       return payload;
@@ -650,6 +650,6 @@ export async function getOfficialDmbbData(): Promise<DmbbPayload> {
 export async function syncDmbbData(): Promise<DmbbPayload> {
   cachedPayload = null;
   cachedAt = 0;
-  revalidateTag("official-dmbb");
+  revalidateTag("official-dmbb", { expire: 900 });
   return getOfficialDmbbData();
 }
